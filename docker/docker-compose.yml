@@ -1,0 +1,32 @@
+services:
+  php:
+    container_name: php
+    build:
+      context: ./php
+      dockerfile: ./Dockerfile
+      args:
+        PHP_VERSION: 8.3
+    ports:
+      - "80:80"
+    volumes:
+      - ../www:/var/www/html/
+    depends_on:
+      - sybase
+    networks:
+      - sybase-network
+
+  sybase:
+    container_name: sybase_16.0
+    privileged: true
+    image: datagrip/sybase:16.0
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./sybase:/tmp/
+    healthcheck:
+      test: "exit 0"
+    networks:
+      - sybase-network
+
+networks:
+  sybase-network:
